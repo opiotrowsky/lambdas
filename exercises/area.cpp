@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <memory>
+#include <functional>
 
 // Change function `areaLessThan20` into lambda.
 // Then change it into `areaLessThanX`, which takes `x = 20` on a capture list.
@@ -31,9 +32,9 @@ public:
 using CirclePtr = shared_ptr<Circle>;
 using Collection = vector<CirclePtr>;
 
-bool areaLessThan20(CirclePtr s) {
-    return (s && s->getArea() < 20);
-}
+// bool areaLessThan20(CirclePtr s) {
+//     return (s && s->getArea() < 20);
+// }
 
 void printCollection(const Collection& collection) {
     for (const auto & it : collection) {
@@ -53,7 +54,8 @@ void printAreas(const Collection& collection) {
 
 void findFirstShapeMatchingPredicate(const Collection& collection,
                                      std::string info,
-                                     bool (*predicate)(CirclePtr s)) {
+                                     std::function<bool(CirclePtr)> predicate) {
+                                    //  bool (*predicate)(CirclePtr s)) {
     auto it = std::find_if(collection.begin(), collection.end(), predicate);
     if(it != collection.end()) {
         cout << "First shape matching predicate: " << info << endl;
@@ -83,10 +85,14 @@ int main() {
 
     cout << "Areas after sort: " << std::endl;
     printAreas(circles);
+    
+    auto areaLessThanX = [area = 20](CirclePtr s){
+    return (s && s->getArea() < area);
+    };
 
     findFirstShapeMatchingPredicate(circles,
                                     "area less than 20",
-                                    areaLessThan20);
+                                    areaLessThanX);
 
     return 0;
 }
